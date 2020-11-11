@@ -224,6 +224,55 @@
    ]
   },
   {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "┌ Info: Precompiling Pluto [c3e4b0f8-55cb-11ea-2926-15256bba5781]\n",
+      "└ @ Base loading.jl:1278\n",
+      "┌ Info: \n",
+      "│ \n",
+      "│     Welcome to Pluto v0.12.4 🎈\n",
+      "│     Start a notebook server using:\n",
+      "│ \n",
+      "│   julia> Pluto.run()\n",
+      "│ \n",
+      "│     Have a look at the FAQ:\n",
+      "│     https://github.com/fonsp/Pluto.jl/wiki\n",
+      "└ \n"
+     ]
+    }
+   ],
+   "source": [
+    "using Pluto"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Opening http://localhost:1234/?secret=069N4Nt1 in your default browser... ~ have fun!\n",
+      "\n",
+      "Press Ctrl+C in this terminal to stop Pluto\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "Pluto.run()"
+   ]
+  },
+  {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
@@ -1807,10 +1856,11 @@
    "metadata": {},
    "source": [
     "We see that there is a balance between the optimal amount of seeds of crop x and z in a relation of approximately 2:1. \n",
-    "This confirms the statement that z has a positive influence on x but not in the reversed way. \n",
+    "This confirms the statement that z has a positive influence on x but not reversed. \n",
     "It was also stated that the crop y is sensitive to environmental conditions and we can confirm this by looking at the output of our minimizer.\n",
-    "For plots like 9 and 13 there is not a lot of H2O and nitrogen so it makes sense that crop x and y are not growing on these plots. It also makes sense to not grow your most profitable crops (x and y) on the worse plots because you want the highest profit from these. Crop z produces nitrogen and can thus grow in the nitrogen limiting conditions. The absent of nitrogen has a postive influence on the growth of z, as can be seen in the output of our minimizer (plot 9). Crop y gets negatively affected by the presents of crop z and x (as can be seen in the denominator of your yields for Yi). Crop y has the highest yield for a low amount of nitrogen and H2O (see matrix for computing the maximum yields) but crop x has higher potential to have higher yields with increasing amounts of nitrogen and H2O. \n",
-    "It is not beneficial to sow a lot of seed y on plots 9 and 13 because the nitrogen and water content is too low there."
+    "For plots like 9 and 13 there is not a lot of H2O and nitrogen so it makes sense that crop x and y are not growing on these plots. It also makes sense to not grow your most profitable crops (x and y) on the worse plots because you want the highest profit from these. Crop z  produces nitrogen and can thus grow in the nitrogen limiting conditions. The absent of nitrogen has a postive influence on the growth of z, as can be seen in the output of our minimizer (plot 9). Crop y has a negative effect of the presents of crop z and x (as can be seen in the denominator of your yields for Yi). Crop y has the highest yield for a low amount of nitrogen and H2O (see matrix for computing the maximum yields) but crop x has higher potential to have higher yields with increasing amounts of nitrogen and H2O. \n",
+    "\n",
+    "It is not beneficial to sow a lot of seed y on plots 9 and 13 because the nitrogen and water content is too low there (from matrix for calculating maximal yield of crops on the plots it can be seen that y does not grow well on  low nitrogen and water soils)."
    ]
   },
   {
@@ -5921,28 +5971,12 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "We can see that the crop x has a higher yield in coculture (2841) than in monoculture (2828) for the same amount of seeds. This can be explained by the positive influence of the crop z, the one that produces nitrogen, while x heavily needs nitrogen. The other two crops (y and z) have higher yield in the monoculture than in the coculture for the same amount of seeds. \n",
+    "We can see that the crop x has a higher yield in coculture (2841) than in monoculture (2828) for the same amount of seeds. This can be explained by the positive influence of the crop z, the one that produces nitrogen, while x heavily need nitrogen. The other two crops (y and z) have higher yield in the monoculture than in the coculture for the same amount of seeds. \n",
     "This effect is most clearly seen in crop y and can be explained by the large terms for x and z in the denominator of equation \n",
     "$$Y_i = \\frac{A_i^y y_i^2}{30 + 4x_i + y_i^2 + 7z_i}\\,,$$\n",
     "\n",
-    "This points out that crop y is easily affected by the other crops. Furthermore it is important to note that even with monoculture your yield is not equally large as with the three crops in coculture but this has also something to do with the higher amount of seeds that you have at your disposal. It is also not possible to interpret the yields for the monoculture separately and then add the three yields together because then we should have used 45 plots instead of 15. Since we don't know for how much money the crops were imported it is difficult to make a general conclusion about this. It is clear that if you add the 3 monoculture yields (2828+3806+2317) your yield is higher than the coculture yields (2841+1934+1659) but the trade off is that you need more plots to have this yield. We can also see that if you had to chose one crop you should opt to grow y (4588.70 euro revenue).\n"
+    "This points out that crop y is easily affected by the other crops. Furthermore it is important to note that even with monoculture your yield is not equally large as with the three crops in coculture but this has also something to do with the more amount of seeds that you have at your disposal. It is also not possible to interpret the yields for the monoculture separately and then add the three yields together because then we should have 45 plots instead of 15. Since we don't know for how much money the crops were imported it is difficult to make some general conclusion about this. It is clear that if you add the 3 monoculture yields (2828+3806+2317) your yield is higher than the coculture yields (2841+1934+1659) but the trade off is that you need more plots to have this yield. We can also see that if you had to chose one crop you should opt to grow y (4588.70 euro revenue).\n"
    ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "pluto2jupyter(\"project_sowing_plan.ipynb\")"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": []
   }
  ],
  "metadata": {
