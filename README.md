@@ -1,7 +1,9 @@
 # STMO_project
-project for the course STMO
+Project for the course STMO
 
 Project book_shelves
+
+
 Oplossing momenteel:
 - SA met penalty die groter wordt gedurende de tijd voor invalid solutions
 - neighbors ontstaan door ofwel twee boeken in de kast te verwisselen, of door een boek dat niet in de kast staat te nemen en deze te verwisselen met boek in de kast
