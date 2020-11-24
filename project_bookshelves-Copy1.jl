@@ -93,12 +93,12 @@ Project by $student_names
 """
 
 # ╔═╡ 544adaac-1396-11eb-0eb4-47e9ec7ab3fb
-function knapsack(books_height,book_width,shelve_height,shelve_width; verbose =true)
+function knapsack(surface_book,books_height,book_width,shelve_height,shelve_width; verbose =true)
     model = Model(GLPK.Optimizer)
 	
-	@variable(model, x[1:length(books_height)], Bin) # binary variable x => 0 or 1
+	@variable(model, x[1:length(surface_book)], Bin) # binary variable x => 0 or 1
     # Objective: maximize profit
-    @objective(model, Max, (books_height .* book_width)' * x) # profit is actually the book_surface
+    @objective(model, Max, surface_book' * x) # profit is actually the book_surface
     # Constraint: 
 	# de som van alle diktes van boeken moet smaller zijn dan de shelve width
     @constraint(model,  sum(book_width' * x) <= shelve_width)
@@ -119,8 +119,38 @@ end
 # ╔═╡ 576a742a-2e57-11eb-3a03-719f48fe4815
 global solution = Dict{Int,Vector{Int}}()
 
-# ╔═╡ 650cfe16-2e77-11eb-2850-9b6d9fbcb6b7
-surface_book_new
+# ╔═╡ ca58fcb2-2e76-11eb-11b4-e5b30dfdda3c
+solution
+
+# ╔═╡ b9f6d094-2d9d-11eb-22e2-c52351cf60b2
+#begin
+#@	local surface_book_new = surface_book
+#	local books_height_new = books_height
+#	local book_width_new = book_width
+#	local new_books = books
+#	for i in 1:3
+		# running the knapsack problem 
+		# output is values for x (books) to take
+#		output = knapsack(surface_book_new,books_height_new,book_width_new,
+#			shelve_height[logical_order_shelves[i]],
+#			shelve_width[logical_order_shelves[i]])
+	
+		# the books you took for that shelve
+#		picked_books = new_books[output .==1]
+		# getting the colors for the picked books
+#		picked_books_c = [book[:color] for book in 		picked_books[1:length(picked_books)]]
+		#putting everything in solution dict
+#		local solution2[logical_order_shelves[i]] = 
+#		findall(all_book_colors .∈ Ref(Set(picked_books_c)))
+		
+		# new iteration 
+#		local surface_book_new = surface_book_new[output .==0]
+#		local books_height_new = books_height_new[output .==0]
+#		local book_width_new = book_width_new[output .==0]
+#		local new_books = new_books[output .==0]
+	end
+	
+end
 
 # ╔═╡ 541aecfe-1396-11eb-39f0-793ac09252f1
 #savesolution("mycleversoluton.json", mysolution)
@@ -311,33 +341,16 @@ begin
 	end 
 end
 
-# ╔═╡ b9f6d094-2d9d-11eb-22e2-c52351cf60b2
-begin
+# ╔═╡ 11f35d7e-2e77-11eb-2d86-0b17353a0fcf
+begin 
+	global surface_book_new = surface_book
 	global books_height_new = books_height
 	global book_width_new = book_width
 	global new_books = books
-	for i in 1:3
-		# running the knapsack problem 
-		# output is values for x (books) to take
-		output = knapsack(books_height_new,book_width_new,
-			shelve_height[logical_order_shelves[i]],
-			shelve_width[logical_order_shelves[i]])
-	
-		# the books you took for that shelve
-		picked_books = new_books[output .==1]
-		# getting the colors for the picked books
-		picked_books_c = [book[:color] for book in 		picked_books[1:length(picked_books)]]
-		#putting everything in solution dict
-		local solution[logical_order_shelves[i]] = 
-		findall(all_book_colors .∈ Ref(Set(picked_books_c)))
-		
-		# new iteration 
-		books_height_new = books_height_new[output .==0]
-		book_width_new = book_width_new[output .==0]
-		new_books = new_books[output .==0]
-	end
-	
 end
+
+# ╔═╡ 650cfe16-2e77-11eb-2850-9b6d9fbcb6b7
+surface_book_new
 
 # ╔═╡ 63f4ef9c-137f-11eb-25ae-71912fcb44e1
 """Check if a solution is valid."""
@@ -511,6 +524,8 @@ show_solution(mysolution)
 # ╠═cc04c90c-2e3e-11eb-0821-7989753a48c9
 # ╠═c276eb80-2e3f-11eb-0622-8f38cf1683e7
 # ╠═576a742a-2e57-11eb-3a03-719f48fe4815
+# ╠═ca58fcb2-2e76-11eb-11b4-e5b30dfdda3c
+# ╠═11f35d7e-2e77-11eb-2d86-0b17353a0fcf
 # ╠═b9f6d094-2d9d-11eb-22e2-c52351cf60b2
 # ╠═650cfe16-2e77-11eb-2850-9b6d9fbcb6b7
 # ╠═541aecfe-1396-11eb-39f0-793ac09252f1
