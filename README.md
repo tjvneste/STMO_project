@@ -12,3 +12,4 @@ Oplossing momenteel:
 Mogelijke verbetering:
 - we kunnen ook nog extra boeken proberen toevoegen in de kast ipv enkel te verwisselen
 - in functie neighbor_design --> toestaan dat er soms een boek wordt verwijderd en dan er nieuwe worden ingezet (meer dan 1?)
+- spelen met penalties? extra penalties?
