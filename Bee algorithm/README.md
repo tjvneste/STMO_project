@@ -14,4 +14,11 @@ Functies
 
 Toy example
 -	Zoek het minimum van de functie y =  x1²+x2²+x3²+x4²
-o	[2 3 5 6] = voedselbron 1
+
+Uitwerken voor andere functies
+
+Visualizatie van convergentie algoritme
+- evolutie van populaties
+- evolutie fitness doorheen de tijd
+
+
