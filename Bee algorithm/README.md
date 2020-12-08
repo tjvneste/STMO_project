@@ -6,7 +6,7 @@ Functies
 -	Main Artificial Bee Algorithm script
 -	Initialize random population function: DONE
 -	Objective function + fitness function: DONE
--	Create new solution (1 variabele verschil: employed bees, onlooker bees)
+-	Create new solution (1 variabele verschil: employed bees, onlooker bees): DONE
 -	Create random solution (scouting bees)
 -	Employed bees function
 -	Onlooker bees function
