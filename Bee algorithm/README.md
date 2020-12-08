@@ -5,8 +5,7 @@ Project STMO: ABC (Artificial Bee Algorithm)
 Functies 
 -	Main Artificial Bee Algorithm script
 -	Initialize random population function: DONE
--	Objective function: DONE
--	Fitness function: DONE
+-	Objective function + fitness function: DONE
 -	Create new solution (1 variabele verschil: employed bees, onlooker bees)
 -	Create random solution (scouting bees)
 -	Employed bees function
