@@ -8,9 +8,11 @@ Functies
 -	Objective function + fitness function: DONE
 -	Create new solution (1 variabele verschil: employed bees, onlooker bees): DONE
 -	Create random solution (scouting bees)
--	Employed bees function
+-	Employed bees function: DONE
+- food source information function (probability function): kirsten bezig
 -	Onlooker bees function
 -	Scouting bee function
+
 
 Toy example
 -	Zoek het minimum van de functie y =  x1²+x2²+x3²+x4²
