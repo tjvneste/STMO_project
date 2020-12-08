@@ -5,8 +5,7 @@ Project STMO: ABC (Artificial Bee Algorithm)
 Functies 
 -	Main Artificial Bee Algorithm script
 -	Initialize random population function: DONE
--	Objective function: DONE
--	Fitness function: DONE
+-	Objective function + fitness function: DONE
 -	Create new solution (1 variabele verschil: employed bees, onlooker bees)
 -	Create random solution (scouting bees)
 -	Employed bees function
@@ -15,4 +14,11 @@ Functies
 
 Toy example
 -	Zoek het minimum van de functie y =  x1²+x2²+x3²+x4²
-o	[2 3 5 6] = voedselbron 1
+
+Uitwerken voor andere functies
+
+Visualizatie van convergentie algoritme
+- evolutie van populaties in 2D/3D grid?
+- evolutie fitness doorheen de tijd
+
+
