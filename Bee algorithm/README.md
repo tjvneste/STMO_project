@@ -1,15 +1,18 @@
 # STMO_project
-Project for the course STMO
 
-Project book_shelves
+Project STMO: ABC (Artificial Bee Algorithm)
 
+Functies 
+-	Main Artificial Bee Algorithm script
+-	Initialize random population function
+-	Objective function
+-	Fitness function
+-	Create new solution (1 variabele verschil: employed bees, onlooker bees)
+-	Create random solution (scouting bees)
+-	Employed bees function
+-	Onlooker bees function: K
+-	Scouting bee function
 
-Oplossing momenteel:
-- SA met penalty die groter wordt gedurende de tijd voor invalid solutions
-- neighbors ontstaan door ofwel twee boeken in de kast te verwisselen, of door een boek dat niet in de kast staat te nemen en deze te verwisselen met boek in de kast
-
-
-Mogelijke verbetering:
-- we kunnen ook nog extra boeken proberen toevoegen in de kast ipv enkel te verwisselen
-- in functie neighbor_design --> toestaan dat er soms een boek wordt verwijderd en dan er nieuwe worden ingezet (meer dan 1?)
-- spelen met penalties? extra penalties?
+Toy example
+-	Zoek het minimum van de functie y =  x1²+x2²+x3²+x4²
+o	[2 3 5 6] = voedselbron 1
