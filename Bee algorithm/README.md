@@ -18,7 +18,7 @@ Toy example
 Uitwerken voor andere functies
 
 Visualizatie van convergentie algoritme
-- evolutie van populaties
+- evolutie van populaties in 2D/3D grid?
 - evolutie fitness doorheen de tijd
 
 
