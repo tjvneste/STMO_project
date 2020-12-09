@@ -24,3 +24,12 @@ Visualizatie van convergentie algoritme
 - evolutie fitness doorheen de tijd
 
 
+-animatie van hoe de bijen bewegen naar minimum. 
+-basic functies (benchmark functies) => optim package vergelijken met accuraatheid en snelheid. 
+-1 notebook 
+
+
+assert is om de input te checken van de functies. 
+
+Unit test => als ontwikkelaar of de functies werken.
+Sanity check.  
