@@ -521,6 +521,34 @@ begin
 		legend = :outerbottom)
 end
 
+# ╔═╡ 5e318920-42c4-11eb-36a1-3f2cb06afaac
+begin
+	# scatter(x, y, xlabel="x", ylabel="y", 
+	# 	 title="Evolution of populations over time")
+	# my_cg = cgrad([:yellow,:red])
+
+	
+	plot(x2,y2,f,st=:surface,
+		label="Objective function",
+		# camera=(-30,30),
+		xlims=(bounds_lower[1],bounds_upper[1]),
+		ylims=(bounds_lower[2],bounds_upper[2]),
+		zlims=(-2,10000),
+		legend=:outerbottom) #,c=my_cg) #,camera=(-30,30))
+	
+	scatter!(x, y, 
+		  z, 
+		xlabel="x1", 
+		ylabel="x2",
+		zlabel="x3",
+		title="Evolution of populations over time",
+		titlefont = font(15),
+		c="blue", 
+		markershape=  :circle,
+		label="Position of bees after iteration "*string(step),
+		legend = :outerbottom)
+end
+
 # ╔═╡ Cell order:
 # ╠═f347e610-42a3-11eb-2116-ef50f1246cf3
 # ╟─b023f0e0-42a3-11eb-18f9-c1b132fb5276
@@ -529,6 +557,7 @@ end
 # ╠═97ccd540-42a6-11eb-1064-2d014a91ac23
 # ╠═b81d7f30-42a5-11eb-27ce-f1cc849ffdc5
 # ╠═581a22f0-42af-11eb-1d59-df5f1efa5732
+# ╠═5e318920-42c4-11eb-36a1-3f2cb06afaac
 # ╠═6123c2b0-42a6-11eb-3891-39dd02f46306
 # ╟─70832f00-42a3-11eb-047e-a38754853775
 # ╟─74b19670-42a3-11eb-2ffb-253407cbad76
