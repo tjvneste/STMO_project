@@ -19,7 +19,7 @@ using InteractiveUtils, LinearAlgebra, Plots, PlutoUI
 # ╔═╡ f347e610-42a3-11eb-2116-ef50f1246cf3
 begin
 	S = 24 #je krijgt een error als dit een oneven getal is --> fixen! of error inbouwen in functies
-	T = 60
+	T = 50
 	D=3
 	limit = D * (S/2)
 	bounds_lower = [-100,-100,-100]; # error als dimensies niet gelijk aan D --> inbouwen in functies!
@@ -34,11 +34,8 @@ end
 # import Pkg; Pkg.add("GeometryTypes")
 
 # ╔═╡ b81d7f30-42a5-11eb-27ce-f1cc849ffdc5
-begin
-	println("slider")
-	@bind step Slider(1:T; show_value=true)
-	
-end
+@bind step Slider(1:T; show_value=true)
+
 
 # ╔═╡ 70832f00-42a3-11eb-047e-a38754853775
 begin
@@ -497,16 +494,15 @@ begin
 	# my_cg = cgrad([:yellow,:red])
 	x2=range(bounds_lower[1],bounds_upper[1], step=5)
 	y2=range(bounds_lower[2],bounds_upper[2], step=5)
+	# z=0
 	f(x2,y2) = (x2.^2+y2.^2)/100
-	
 	plot(x2,y2,f,st=:surface,
-		label="Objective function",
 		# camera=(-30,30),
 		xlims=(bounds_lower[1],bounds_upper[1]),
 		ylims=(bounds_lower[2],bounds_upper[2]),
 		zlims=(bounds_lower[3],bounds_upper[3]),
-		legend=:outerbottom) #,c=my_cg) #,camera=(-30,30))
-	
+		label="Objective function",
+		legend=true) #,c=my_cg) #,camera=(-30,30))
 	scatter!(x, y, z, 
 		xlabel="x1", 
 		ylabel="x2",
