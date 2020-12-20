@@ -22,8 +22,6 @@ Uitwerken voor andere functies
 Visualizatie van convergentie algoritme
 - evolutie van populaties in 2D/3D grid?
 - evolutie fitness doorheen de tijd
-
-
 -animatie van hoe de bijen bewegen naar minimum. 
 -basic functies (benchmark functies) => optim package vergelijken met accuraatheid en snelheid. 
 -1 notebook 
