@@ -19,11 +19,11 @@ using InteractiveUtils, LinearAlgebra, Plots, PlutoUI
 # ╔═╡ f347e610-42a3-11eb-2116-ef50f1246cf3
 begin
 	S = 24 #je krijgt een error als dit een oneven getal is --> fixen! of error inbouwen in functies
-	T = 60
-	D=3
+	T = 25
+	D=2
 	limit = D * (S/2)
-	bounds_lower = [-100,-100,-100]; # error als dimensies niet gelijk aan D --> inbouwen in functies!
-	bounds_upper = [100,100,100];
+	bounds_lower = [-100,-100]; # error als dimensies niet gelijk aan D --> inbouwen in functies!
+	bounds_upper = [100,100];
 	
 end
 
@@ -486,7 +486,7 @@ begin
 	for bee in populations[step]
 		append!(x,bee[1])
 		append!(y, bee[2])
-		append!(z, bee[3])
+		append!(z, 0)
 	end
 end
 
@@ -497,17 +497,19 @@ begin
 	# my_cg = cgrad([:yellow,:red])
 	x2=range(bounds_lower[1],bounds_upper[1], step=5)
 	y2=range(bounds_lower[2],bounds_upper[2], step=5)
-	f(x2,y2) = (x2.^2+y2.^2)/100
+	# z2=range(bounds_lower[2],bounds_upper[2], step=5)
+	f(x2,y2) = (x2.^2+y2.^2)
 	
-	plot(x2,y2,f,st=:surface,
+	plot(x2,y2,f,st=:contour,
 		label="Objective function",
 		# camera=(-30,30),
 		xlims=(bounds_lower[1],bounds_upper[1]),
 		ylims=(bounds_lower[2],bounds_upper[2]),
-		zlims=(bounds_lower[3],bounds_upper[3]),
+		# zlims=(-2,10000),
 		legend=:outerbottom) #,c=my_cg) #,camera=(-30,30))
 	
-	scatter!(x, y, z, 
+	scatter!(x, y, 
+		 # z, 
 		xlabel="x1", 
 		ylabel="x2",
 		zlabel="x3",
