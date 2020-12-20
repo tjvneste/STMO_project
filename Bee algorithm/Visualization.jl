@@ -16,16 +16,23 @@ end
 # ╔═╡ 97ccd540-42a6-11eb-1064-2d014a91ac23
 using InteractiveUtils, LinearAlgebra, Plots, PlutoUI
 
+# ╔═╡ b2d27f2e-42dc-11eb-2a63-73877d1df55d
+# this is a huge header #
+
 # ╔═╡ f347e610-42a3-11eb-2116-ef50f1246cf3
 begin
 	S = 24
 	T = 50
-	D = 4
+	D = 2
 	limit = D * (S/2)
-	bounds_lower = [-100,-100, -100,-100];
-	bounds_upper = [100,100, 100,100];
+	bounds_lower = [-32.768, 32.768];
+	bounds_upper = [-32.768, 32.768];
 	
 end
+
+# ╔═╡ fc67c090-42d4-11eb-2737-2bdefb4375a0
+# @bind functie Select(["ackley", "sphere","rosenbrock","branin","rastrigine"])
+@bind functie Select(["ackley", "sphere","rastrigine"])
 
 # ╔═╡ fb7427b0-42a6-11eb-254b-298fe1325785
 # import Pkg; Pkg.add("PlutoUI")
@@ -496,8 +503,65 @@ begin
 	end
 end
 
+# ╔═╡ f3396db0-42d0-11eb-2e37-153372b7383e
+begin
+	function sphere(x)
+	    return sum(x.^2)
+	end  
+	
+	function ackley(x; a=20, b=0.2, c=2π)
+	    d = length(x)
+	    return -a * exp(-b*sqrt(sum(x.^2)/d)) -
+	        exp(sum(cos.(c .* x))/d) + a + exp(1)
+	end
+	
+	function rosenbrock((x1,x2); a=1, b=5)
+	    # 2 dimensions!
+	    return (a-x1)^2 + b*(x2-x1^2)^2
+	end
+	
+	function branin((x1, x2); a=1, b=5.1/(4pi^2), c=5/pi, r=6, s=10, t=1/8pi)
+	    # 2 dimensions!
+	    return a * (x2 - b * x1^2 + c * x1 - r)^2 + s * (1 - t) * cos(x1) + s
+	end
+	
+	function rastrigine(x; A=10)
+	    return length(x) * A + sum(x.^2 .+ A .* cos.(2pi .* x))
+	end
+end
+
+# ╔═╡ 15f8ed60-42d3-11eb-0199-2967a058405a
+begin
+	if functie == "ackley"
+		f_optimize = ackley
+	end
+	
+	if functie == "sphere"
+		f_optimize = sphere
+	end
+	
+ 
+	
+# 	if functie == "rosenbrock"
+# 		f_optimize = rosenbrock
+# 	end
+	
+ 
+	
+# 	if functie == "branin"
+# 		f_optimize = branin
+# 	end
+	
+ 
+	
+	if functie == "rastrigine"
+		f_optimize = rastrigine
+	end 
+	
+end
+
 # ╔═╡ 54c02380-42a4-11eb-0240-7b2d895cb337
-optimal_solution, populations = ArtificialBeeColonization(D, bounds_lower, bounds_upper, S, T, limit, ackley)
+optimal_solution, populations = ArtificialBeeColonization(D, bounds_lower, bounds_upper, S, T, limit, f_optimize)
 
 # ╔═╡ 6123c2b0-42a6-11eb-3891-39dd02f46306
 begin
@@ -516,10 +580,23 @@ begin
 	# scatter(x, y, xlabel="x", ylabel="y", 
 	# 	 title="Evolution of populations over time")
 	# my_cg = cgrad([:yellow,:red])
-	x2=range(bounds_lower[1],bounds_upper[1], step=5)
-	y2=range(bounds_lower[2],bounds_upper[2], step=5)
+	x2=range(bounds_lower[1],bounds_upper[1], step=1)
+	y2=range(bounds_lower[2],bounds_upper[2], step=1)
 	# z2=range(bounds_lower[2],bounds_upper[2], step=5)
-	f(x2,y2) = (x2.^2+y2.^2)
+	if functie == "sphere"
+		f(x2,y2) = (x2.^2+y2.^2)
+	end
+	
+	if functie == "ackley"
+	    d = length(vcat(x2,y2))
+		c=2*3.14
+		a=20
+		b=0.2
+	    f(x2,y2) = -a * exp(-b*sqrt( sum(x2.^2)+sum(y2.^2)/d )) 
+			-exp(sum(cos.(c .* x2)) + sum(cos.(c .* y2)) /d) 
+			+ 20 + exp(1)  
+	end
+		
 	
 	plot(x2,y2,f,st=:contour,
 		label="Objective function",
@@ -570,55 +647,17 @@ begin
 		legend = :outerbottom)
 end
 
-# ╔═╡ f3396db0-42d0-11eb-2e37-153372b7383e
-begin
-	function sphere(x)
-	    return sum(x.^2)
-	end  
-	
-	function ackley(x; a=20, b=0.2, c=2π)
-	    d = length(x)
-	    return -a * exp(-b*sqrt(sum(x.^2)/d)) -
-	        exp(sum(cos.(c .* x))/d) + 20 + exp(1)
-	end
-	
-	function rosenbrock((x1,x2); a=1, b=5)
-	    # 2 dimensions!
-	    return (a-x1)^2 + b*(x2-x1^2)^2
-	end
-	
-	function branin((x1, x2); a=1, b=5.1/(4pi^2), c=5/pi, r=6, s=10, t=1/8pi)
-	    # 2 dimensions!
-	    return a * (x2 - b * x1^2 + c * x1 - r)^2 + s * (1 - t) * cos(x1) + s
-	end
-	
-	function rastrigine(x; A=10)
-	    return length(x) * A + sum(x.^2 .+ A .* cos.(2pi .* x))
-	end
-end
-
-# ╔═╡ dbe443a0-42d1-11eb-2fbd-354f77994b31
-begin
-		function sphere(x)
-		    return sum(x.^2)
-		end  
-		
-		function ackley(x; a=20, b=0.2, c=2π)
-		    d = length(x)
-		    return -a * exp(-b*sqrt(sum(x.^2)/d)) -
-		        exp(sum(cos.(c .* x))/d) + 20 + exp(1)
-		end
-end
-
 # ╔═╡ Cell order:
+# ╠═b2d27f2e-42dc-11eb-2a63-73877d1df55d
 # ╠═f347e610-42a3-11eb-2116-ef50f1246cf3
-# ╠═18bf40b0-42d0-11eb-336d-935a75cd63c4
+# ╟─18bf40b0-42d0-11eb-336d-935a75cd63c4
+# ╠═fc67c090-42d4-11eb-2737-2bdefb4375a0
+# ╠═15f8ed60-42d3-11eb-0199-2967a058405a
 # ╠═54c02380-42a4-11eb-0240-7b2d895cb337
 # ╟─fb7427b0-42a6-11eb-254b-298fe1325785
 # ╠═97ccd540-42a6-11eb-1064-2d014a91ac23
 # ╠═b81d7f30-42a5-11eb-27ce-f1cc849ffdc5
 # ╠═581a22f0-42af-11eb-1d59-df5f1efa5732
-# ╠═dbe443a0-42d1-11eb-2fbd-354f77994b31
 # ╠═5e318920-42c4-11eb-36a1-3f2cb06afaac
 # ╠═6123c2b0-42a6-11eb-3891-39dd02f46306
 # ╟─70832f00-42a3-11eb-047e-a38754853775
