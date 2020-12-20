@@ -102,6 +102,9 @@ begin
 	end
 end
 
+# ╔═╡ 5ab05c30-42c5-11eb-1dba-efb70a777b66
+
+
 # ╔═╡ 7f387140-42a3-11eb-1b22-8f9ca4f6bacd
 begin
 	""" Fitness function
@@ -560,7 +563,8 @@ end
 # ╠═5e318920-42c4-11eb-36a1-3f2cb06afaac
 # ╠═6123c2b0-42a6-11eb-3891-39dd02f46306
 # ╟─70832f00-42a3-11eb-047e-a38754853775
-# ╟─74b19670-42a3-11eb-2ffb-253407cbad76
+# ╠═74b19670-42a3-11eb-2ffb-253407cbad76
+# ╠═5ab05c30-42c5-11eb-1dba-efb70a777b66
 # ╟─7f387140-42a3-11eb-1b22-8f9ca4f6bacd
 # ╟─85259fae-42a3-11eb-0431-67e3278dbfb0
 # ╟─8e011470-42a3-11eb-0443-a70ffec0d6f3
