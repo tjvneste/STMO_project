@@ -13,11 +13,8 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ 97ccd540-42a6-11eb-1064-2d014a91ac23
-using InteractiveUtils, LinearAlgebra, Plots, PlutoUI
-
 # ╔═╡ 0ca837e0-42ef-11eb-17fa-9335cb9a3997
-
+using InteractiveUtils, LinearAlgebra, Plots, PlutoUI
 
 # ╔═╡ 70832f00-42a3-11eb-047e-a38754853775
 begin
@@ -335,9 +332,9 @@ begin
 	        exp(sum(cos.(c .* x))/d) + a + exp(1)
 	end
 	
-	function rosenbrock(x; a=1, b=5)
+	function rosenbrock((x1, x2); a=1, b=100)
 	    # 2 dimensions!
-	    return (a-x[1])^2 + b*(x[2]-x[1]^2)^2
+	    return (a-x1)^2 + b*(x2-x1^2)^2
 	end
 	
 	function branin((x1, x2); a=1, b=5.1/(4pi^2), c=5/pi, r=6, s=10, t=1/8pi)
@@ -359,30 +356,28 @@ end
 # ╔═╡ 27f302ee-42ea-11eb-2d9e-49dffc0d983d
 @bind functie Select(["ackley", "sphere","rosenbrock","branin","rastrigine"])
 
-# ╔═╡ 55571970-42fe-11eb-12b1-0d9212dbc2ba
-
 
 # ╔═╡ 3235a8d2-42ea-11eb-1fe1-6d91eca83dad
 begin
 	if functie == "ackley"
-		f_optimize = ackley
+		f_optimize = ackley;
 	end
 	
 	if functie == "sphere"
-		f_optimize = sphere
+		f_optimize = sphere;
 	end
 	
 	if functie == "rosenbrock"
-		f_optimize = rosenbrock
+		f_optimize = rosenbrock;
 	end 
 	
 	if functie == "branin"
-		f_optimize = branin
+		f_optimize = branin;
 	end 
 	
 	
 	if functie == "rastrigine"
-		f_optimize = rastrigine
+		f_optimize = rastrigine;
 	end 
 	
 end
@@ -405,9 +400,21 @@ begin
 	end
 	
 	if functie == "rosenbrock"
+		T = 500
+		bounds_lower = [-500, -500];  
+		bounds_upper = [500,500];
+	end
+	
+	if functie == "branin"
 		T = 50
-		bounds_lower = [-3,3];  
-		bounds_upper = [-3,3];
+		bounds_lower = [-5,0];  
+		bounds_upper = [10,15];
+	end
+	
+	if functie == "rastrigine"
+		T = 100
+		bounds_lower = [-5,-5];  
+		bounds_upper = [5,5];	
 	end
 end
 
@@ -561,15 +568,6 @@ begin
 	optimal_solution 
 end
 
-# ╔═╡ 85e6bd70-42fe-11eb-3b7e-0fc0f589139c
-
-
-# ╔═╡ fb7427b0-42a6-11eb-254b-298fe1325785
-# import Pkg; Pkg.add("PlutoUI")
-# import Pkg; Pkg.add("AbstractPlotting")
-# import Pkg; Pkg.add("Makie")
-# import Pkg; Pkg.add("GeometryTypes")
-
 # ╔═╡ b81d7f30-42a5-11eb-27ce-f1cc849ffdc5
 @bind step Slider(1:T; show_value=true)
 
@@ -598,14 +596,32 @@ begin
 		
 		end
 		
-		if functie == "ackley"
-			x2=range(bounds_lower[1],bounds_upper[1], step=0.75)
-			y2=range(bounds_lower[2],bounds_upper[2], step=0.75)
-		    d = 2
-			c=2*3.14
-			a=20
-			b=0.2
-		    f(x2,y2) = -a * exp(-b*sqrt((x2^2+y2^2)/d))-exp((cos(c*x2)+cos(c*y2))/d) + a + exp(1)  
+		if functie == "rosenbrock"
+			x2=range(bounds_lower[1],bounds_upper[1], step=0.5)
+			y2=range(bounds_lower[2],bounds_upper[2], step=0.5)
+			a=1
+			b=5
+		    f(x2,y2) = (a-x2)^2 + b*(y2-x2^2)^2
+		end	
+	
+		if functie == "branin"
+			x2=range(bounds_lower[1],bounds_upper[1], step=0.5)
+			y2=range(bounds_lower[2],bounds_upper[2], step=0.5)
+			a=1 
+			b=5.1/(4pi^2)
+			c=5/pi
+			r=6
+			s=10
+			t=1/8pi
+		    f(x2,y2) = a * (y2 - b * x2^2 + c * x2 - r)^2 + s * (1 - t) * cos(x2) + s
+		end	
+	
+		if functie == "rastrigine"
+			x2=range(bounds_lower[1],bounds_upper[1], step=0.5)
+			y2=range(bounds_lower[2],bounds_upper[2], step=0.5)
+			A=10
+			d=2
+		    f(x2,y2) = d*A + x2^2-A*cos(2pi*x2) + y2^2-A*cos(2pi*y2)
 		end	
 end
 
@@ -658,44 +674,6 @@ begin
 		legend = :outerbottom)
 end
 
-# ╔═╡ 048ebaf0-42ec-11eb-266f-3bf869e2dd69
-# begin
-# 	l = @layout [a  b]
-# 	p1 = 	plot(x2,y2,f,st=:contour,
-# 			label="Objective function",
-# 			xlims=(bounds_lower[1],bounds_upper[1]),
-# 			ylims=(bounds_lower[2],bounds_upper[2]),
-# 			legend=:outerbottom) 
-	
-# 		scatter!(x, y,  
-# 		xlabel="x1", 
-# 		ylabel="x2",
-# 		title="Evolution of populations over time",
-# 		titlefont = font(12),
-# 		c="blue", 
-# 		markershape=  :circle,
- 
-# 		legend = false)
-	
-# 	p2 = plot(x2,y2,f,st=:surface,
-			 
-# 			xlims=(bounds_lower[1],bounds_upper[1]),
-# 			ylims=(bounds_lower[2],bounds_upper[2]),
-# 			zlims=(-2,10000),
-# 			legend=false)
-	
-# 			scatter!(x, y, z, 
-# 		xlabel="x1", 
-# 		ylabel="x2",
-# 		c="blue", 
-# 		markershape=  :circle,
-# 		label="Position of bees after iteration "*string(step),
-# 		legend = :bottom)
-	 
-# 	# plot(p1, p2,  layout = l)
-# 	plot(p1,p2, layout=grid(2, 1, heights=[0.55,0.45]))
-# end
-
 # ╔═╡ Cell order:
 # ╠═0ca837e0-42ef-11eb-17fa-9335cb9a3997
 # ╟─70832f00-42a3-11eb-047e-a38754853775
@@ -707,17 +685,12 @@ end
 # ╟─9ca62a10-42a3-11eb-1650-6544fb0ebd31
 # ╟─a8d02d90-42a3-11eb-36d5-d319a05d9347
 # ╟─b023f0e0-42a3-11eb-18f9-c1b132fb5276
-# ╠═f14360b0-42e9-11eb-1f4c-35d1a9eb188e
-# ╟─27f302ee-42ea-11eb-2d9e-49dffc0d983d
-# ╟─55571970-42fe-11eb-12b1-0d9212dbc2ba
-# ╠═3235a8d2-42ea-11eb-1fe1-6d91eca83dad
-# ╠═f347e610-42a3-11eb-2116-ef50f1246cf3
+# ╟─f14360b0-42e9-11eb-1f4c-35d1a9eb188e
+# ╠═27f302ee-42ea-11eb-2d9e-49dffc0d983d
+# ╟─3235a8d2-42ea-11eb-1fe1-6d91eca83dad
+# ╟─f347e610-42a3-11eb-2116-ef50f1246cf3
 # ╠═54c02380-42a4-11eb-0240-7b2d895cb337
-# ╠═85e6bd70-42fe-11eb-3b7e-0fc0f589139c
-# ╟─fb7427b0-42a6-11eb-254b-298fe1325785
-# ╟─97ccd540-42a6-11eb-1064-2d014a91ac23
 # ╠═b81d7f30-42a5-11eb-27ce-f1cc849ffdc5
-# ╠═9e2b4e60-42ee-11eb-0d7f-c1faa8426796
-# ╠═581a22f0-42af-11eb-1d59-df5f1efa5732
-# ╠═71321ef0-42eb-11eb-0635-b1ce95226c75
-# ╠═048ebaf0-42ec-11eb-266f-3bf869e2dd69
+# ╟─9e2b4e60-42ee-11eb-0d7f-c1faa8426796
+# ╟─581a22f0-42af-11eb-1d59-df5f1efa5732
+# ╟─71321ef0-42eb-11eb-0635-b1ce95226c75

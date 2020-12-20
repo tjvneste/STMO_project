@@ -13,36 +13,8 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ 97ccd540-42a6-11eb-1064-2d014a91ac23
+# ╔═╡ 0ca837e0-42ef-11eb-17fa-9335cb9a3997
 using InteractiveUtils, LinearAlgebra, Plots, PlutoUI
-
-# ╔═╡ b2d27f2e-42dc-11eb-2a63-73877d1df55d
-# this is a huge header #
-
-# ╔═╡ f347e610-42a3-11eb-2116-ef50f1246cf3
-begin
-	S = 24
-	T = 50
-	D = 2
-	limit = D * (S/2)
-	bounds_lower = [-32.768, 32.768];
-	bounds_upper = [-32.768, 32.768];
-	
-end
-
-# ╔═╡ fc67c090-42d4-11eb-2737-2bdefb4375a0
-# @bind functie Select(["ackley", "sphere","rosenbrock","branin","rastrigine"])
-@bind functie Select(["ackley", "sphere","rastrigine"])
-
-# ╔═╡ fb7427b0-42a6-11eb-254b-298fe1325785
-# import Pkg; Pkg.add("PlutoUI")
-# import Pkg; Pkg.add("AbstractPlotting")
-# import Pkg; Pkg.add("Makie")
-# import Pkg; Pkg.add("GeometryTypes")
-
-# ╔═╡ b81d7f30-42a5-11eb-27ce-f1cc849ffdc5
-@bind step Slider(1:T; show_value=true)
-
 
 # ╔═╡ 70832f00-42a3-11eb-047e-a38754853775
 begin
@@ -77,21 +49,10 @@ begin
 end
 
 # ╔═╡ 74b19670-42a3-11eb-2ffb-253407cbad76
-begin 
-	"""Objective function
-
-Calculates the objective values for a certain function 
-Calculation for 1 vector or n instances (vectors) in population.
-
-Input
-- input: input values
-- f: the function that you want to use for computing objective values
-
-"""
-
+ 
 function compute_objective(input, f::Function)
     if length(input)==1
-        objective = f(input)
+        objective = f(sum(input))
         output = objective
     else
         objectives_population = []
@@ -107,7 +68,7 @@ function compute_objective(input, f::Function)
     
     return output
 end
-end 
+ 
 
 # ╔═╡ 7f387140-42a3-11eb-1b22-8f9ca4f6bacd
 begin
@@ -167,72 +128,6 @@ begin
 	    
 	    return probabilities
 	end	
-	
-	
-end
-
-# ╔═╡ 9ca62a10-42a3-11eb-1650-6544fb0ebd31
-begin
-	""" Scouting function
-	This function employs the scouting phase. 
-	
-	Input
-	- population : population of solutions 
-	- bounds_lower: lower bounds of variables 
-	- bounds_upper: upper bounds of variables 
-	- trials: current trial of solutions
-	- fitness: fitness values
-	- objective: objective values
-	- limit: limit value
-	- f: the function that you want to use for computing objective values
-	
-	Output 
-	- population: new population values
-	- fitness: new fitness values
-	- objective: new objective values
-	- trials: updated trials of solutions in population
-	    When original solution has failed to generate better solution, trial counter is increased by 1 unit
-	    When better solution has been found, the trial counter for this new solution is set to zero
-	
-	
-	"""
-	
-	function Scouting(population, bounds_lower, bounds_upper, trials, fitness, objective, limit, f::Function)
-	        
-	        # check whether the trial vector exceed the limit value and importantly where
-	        index_exceed = trials .> limit
-	    
-	        if sum(index_exceed) >= 1 # there is minimal one case where we exceed the limit
-	            if sum(maximum(trials) .== trials) > 1 # multiple cases have the same maximum so chose randomly
-	                possible_scoutings = findall(trials .== maximum(trials))
-	                idx = rand(1:size(possible_scoutings)[1])
-	                global scouting_array = possible_scoutings[idx]
-	            else # only one array has a maximum => chose this one 
-	            
-	                global scouting_array = argmax(trials)
-	            end
-	            pop = population[scouting_array]
-	            fit = fitness[scouting_array]
-	            obj = objective[scouting_array]
-	            trail = trials[scouting_array]
-	        
-	            #creating random population
-	            sol_new = bounds_lower + (bounds_upper-bounds_lower) .* rand(D) # -5 *(10*rand)
-	            new_obj = compute_objective(sol_new,f)
-	            new_fit = compute_fitness(new_obj)
-	        
-	            # replacing the new population
-	            population[scouting_array] = sol_new
-	            fitness[scouting_array] = new_fit[1]
-	            objective[scouting_array] = new_obj
-	            trials[scouting_array] = 0
-	        
-	        end
-	        return population, fitness, objective, trials  
-	
-	
-	end
-	
 	
 	
 end
@@ -389,16 +284,15 @@ begin
 	        r = rand()
 	        if r <= proba[n]
 	            solution = population[n, :][1] # solution n
-	            
-	            objective_values_old = compute_objective(solution, f)
+	            objective_values_old = compute_objective([solution], f)
 	            fitness_old = compute_fitness(objective_values_old)
 	            
 	            solution_new = solution
 	            while solution_new == solution
 	                solution_new = create_newsolution(solution, population, bounds_lower, bounds_upper)
 	            end
-	            
-	            objective_values_new = compute_objective(solution_new, f)
+	    
+	            objective_values_new = compute_objective([solution_new], f)
 	            fitness_new = compute_fitness(objective_values_new)
 	            
 	            if fitness_new > fitness_old # if this get accepted 
@@ -425,87 +319,10 @@ begin
 	
 end
 
-# ╔═╡ 18bf40b0-42d0-11eb-336d-935a75cd63c4
-begin
-	""" Artificial Bee Colony Algorithm
-	
-	This functions runs the Artificial Bee Colony Algorithm with as output the optimal solution of the size D.
-	
-	Input
-	- D: number of decision variables
-	- bounds_lower: lower bounds of variables 
-	- bounds_upper: upper bounds of variables 
-	- S: swarm size
-	- T: number of cycles
-	- limit: decides when scouts phase needs to be executed (often taken Np*D)
-	- f: the function that you want to use for computing objective values
-	
-	
-	
-	Output
-	- optimal_solution: gives a vector of the size of D with the optimal solution  
-	
-	"""
-	
-	function ArtificialBeeColonization(D, bounds_lower, bounds_upper, S, T, limit, f::Function)
-	    @assert D > 0 # only a positive number of decision variables
-	    @assert bounds_lower <= bounds_upper # lower bounds must be lower than the upperbounds or equal
-	    @assert length(bounds_lower) == length(bounds_upper) # length of the boundries must be equal
-	    @assert iseven(S) # swarm size must be an even number
-	    @assert S > 0 # swarm size can not be negative
-	    
-	    
-	    Np = Int8(S/2) # number of food sources/employed bees/onlooker bees
-	    
-	    # initialize population
-	    population = initialize_population(D, bounds_lower, bounds_upper, Np)
-	    
-	    # calculate objective values and fitness values for population
-	    objective_values = compute_objective(population, f)
-	    fitness_values = compute_fitness(objective_values)
-	    
-	    # initialize trial vector for population
-	    trial = zeros(Np, 1)
-	    best_fitness = 0
-	    optimal_solution = []
-		populations = []
-	    
-	    for iterations in 1:T
-	    
-	        ## EMPLOYED BEE PHASE
-	        population, fitness_values, objective_values, trial = employed_bee_phase(population, bounds_lower, bounds_upper, trial, Np, f::Function)
-	    
-	    
-	        ## ONLOOKER BEE PHASE
-	        population, fitness_values, objective_values, trial = onlooker_bee_phase(population, bounds_lower, bounds_upper, trial, Np, f::Function)  
-	       
-	        ## SCOUTING PHASE
-	        if maximum(fitness_values) > best_fitness
-	            best_fitness = maximum(fitness_values)
-	            ind = argmax(fitness_values)
-	            optimal_solution = population[ind]
-	            
-	        end
-	            
-	        population, fitness_values, objective_values, trial = Scouting(population, bounds_lower, bounds_upper, trial, fitness_values, objective_values, limit, f::Function)
-	        
-	        if maximum(fitness_values) > best_fitness
-	            best_fitness = maximum(fitness_values)
-	            ind = argmax(fitness_values)
-	            optimal_solution = population[ind]
-	            
-	        end
-	    	populations = append!(populations, [population])
-			
-	    end
-	
-	    return optimal_solution, populations
-	end
-end
-
-# ╔═╡ f3396db0-42d0-11eb-2e37-153372b7383e
+# ╔═╡ f14360b0-42e9-11eb-1f4c-35d1a9eb188e
 begin
 	function sphere(x)
+	    d = length(x)
 	    return sum(x.^2)
 	end  
 	
@@ -515,7 +332,7 @@ begin
 	        exp(sum(cos.(c .* x))/d) + a + exp(1)
 	end
 	
-	function rosenbrock((x1,x2); a=1, b=5)
+	function rosenbrock((x1, x2); a=1, b=100)
 	    # 2 dimensions!
 	    return (a-x1)^2 + b*(x2-x1^2)^2
 	end
@@ -526,88 +343,298 @@ begin
 	end
 	
 	function rastrigine(x; A=10)
-	    return length(x) * A + sum(x.^2 .+ A .* cos.(2pi .* x))
+	    return length(x) * A + sum(x.^2 .- A .* cos.(2pi .* x))
 	end
 end
 
-# ╔═╡ 15f8ed60-42d3-11eb-0199-2967a058405a
+# sphere: the minimum value of zero is at (0,0)
+# ackley: the minimum value of zero is at (0,0)
+# rosebrock: the minimum value of zero is at (1,1)
+# brunin: Branin-Hoo, function has three global minima: at (-3.14, 12.275), (3.14, 2.275), (9.42, 2.475)
+# rastrigine: the minimum value of zero is at (0,0)
+
+# ╔═╡ 27f302ee-42ea-11eb-2d9e-49dffc0d983d
+@bind functie Select(["ackley", "sphere","rosenbrock","branin","rastrigine"])
+
+
+# ╔═╡ 3235a8d2-42ea-11eb-1fe1-6d91eca83dad
 begin
 	if functie == "ackley"
-		f_optimize = ackley
+		f_optimize = ackley;
 	end
 	
 	if functie == "sphere"
-		f_optimize = sphere
+		f_optimize = sphere;
 	end
 	
- 
+	if functie == "rosenbrock"
+		f_optimize = rosenbrock;
+	end 
 	
-# 	if functie == "rosenbrock"
-# 		f_optimize = rosenbrock
-# 	end
+	if functie == "branin"
+		f_optimize = branin;
+	end 
 	
- 
-	
-# 	if functie == "branin"
-# 		f_optimize = branin
-# 	end
-	
- 
 	
 	if functie == "rastrigine"
-		f_optimize = rastrigine
+		f_optimize = rastrigine;
 	end 
 	
 end
 
-# ╔═╡ 54c02380-42a4-11eb-0240-7b2d895cb337
-optimal_solution, populations = ArtificialBeeColonization(D, bounds_lower, bounds_upper, S, T, limit, f_optimize)
-
-# ╔═╡ 6123c2b0-42a6-11eb-3891-39dd02f46306
+# ╔═╡ f347e610-42a3-11eb-2116-ef50f1246cf3
 begin
-	x = []
-	y = []
-	z = []
-	for bee in populations[step]
-		append!(x,bee[1])
-		append!(y, bee[2])
-		append!(z, 0)
+	S = 24  
+	D=2
+	limit = D * (S/2)
+	if functie == "sphere"
+		T = 35
+		bounds_lower = [-100,-100];  
+		bounds_upper = [100,100];
 	end
+	
+	if functie == "ackley"
+		T = 50
+		bounds_lower = [-30,-30];  
+		bounds_upper = [30,30];
+	end
+	
+	if functie == "rosenbrock"
+		T = 500
+		bounds_lower = [-500, -500];  
+		bounds_upper = [500,500];
+	end
+	
+	if functie == "branin"
+		T = 50
+		bounds_lower = [-5,0];  
+		bounds_upper = [10,15];
+	end
+	
+	if functie == "rastrigine"
+		T = 100
+		bounds_lower = [-5,-5];  
+		bounds_upper = [5,5];	
+	end
+end
+
+# ╔═╡ 9ca62a10-42a3-11eb-1650-6544fb0ebd31
+begin
+	""" Scouting function
+	This function employs the scouting phase. 
+	
+	Input
+	- population : population of solutions 
+	- bounds_lower: lower bounds of variables 
+	- bounds_upper: upper bounds of variables 
+	- trials: current trial of solutions
+	- fitness: fitness values
+	- objective: objective values
+	- limit: limit value
+	- f: the function that you want to use for computing objective values
+	
+	Output 
+	- population: new population values
+	- fitness: new fitness values
+	- objective: new objective values
+	- trials: updated trials of solutions in population
+	    When original solution has failed to generate better solution, trial counter is increased by 1 unit
+	    When better solution has been found, the trial counter for this new solution is set to zero
+	
+	
+	"""
+	
+	function Scouting(population, bounds_lower, bounds_upper, trials, fitness, objective, limit, f::Function)
+	        
+	        # check whether the trial vector exceed the limit value and importantly where
+	        index_exceed = trials .> limit
+	    
+	        if sum(index_exceed) >= 1 # there is minimal one case where we exceed the limit
+	            if sum(maximum(trials) .== trials) > 1 # multiple cases have the same maximum so chose randomly
+	                possible_scoutings = findall(trials .== maximum(trials))
+	                idx = rand(1:size(possible_scoutings)[1])
+	                global scouting_array = possible_scoutings[idx]
+	            else # only one array has a maximum => chose this one 
+	            
+	                global scouting_array = argmax(trials)
+	            end
+	            pop = population[scouting_array]
+	            fit = fitness[scouting_array]
+	            obj = objective[scouting_array]
+	            trail = trials[scouting_array]
+	        
+	            #creating random population
+	            sol_new = bounds_lower + (bounds_upper-bounds_lower) .* rand(D) # -5 *(10*rand)
+	            new_obj = compute_objective([sol_new],f)
+	            new_fit = compute_fitness(new_obj)
+	        
+	            # replacing the new population
+	            population[scouting_array] = sol_new
+	            fitness[scouting_array] = new_fit[1]
+	            objective[scouting_array] = new_obj
+	            trials[scouting_array] = 0
+	        
+	        end
+	        return population, fitness, objective, trials  
+	
+	
+	end
+	
+	
+	
+end
+
+# ╔═╡ b023f0e0-42a3-11eb-18f9-c1b132fb5276
+begin
+	""" Artificial Bee Colony Algorithm
+
+This functions runs the Artificial Bee Colony Algorithm with as output the optimal solution of the size D.
+
+Input
+- D: number of decision variables
+- bounds_lower: lower bounds of variables 
+- bounds_upper: upper bounds of variables 
+- S: swarm size
+- T: number of cycles
+- limit: decides when scouts phase needs to be executed (often taken Np*D)
+- f: the function that you want to use for computing objective values
+
+
+
+Output
+- optimal_solution: gives a vector of the size of D with the optimal solution  
+
+"""
+
+function ArtificialBeeColonization(D, bounds_lower, bounds_upper, S, T, limit, f::Function)
+    @assert D > 0 # only a positive number of decision variables
+    @assert bounds_lower <= bounds_upper # lower bounds must be lower than the upperbounds or equal
+    @assert length(bounds_lower) == length(bounds_upper) == D  # length of the boundries must be equal to the number of decision variables
+    @assert iseven(S) # swarm size must be an even number
+    @assert S > 0 # swarm size can not be negative
+    @assert T > 0 # number of cylces must be postive
+ 
+    
+    Np = Int8(S/2) # number of food sources/employed bees/onlooker bees
+    
+    # initialize population
+    population = initialize_population(D, bounds_lower, bounds_upper, Np)
+    
+    # calculate objective values and fitness values for population
+    objective_values = compute_objective(population, f)
+    fitness_values = compute_fitness(objective_values)
+    
+    # initialize trial vector for population
+    trial = zeros(Np, 1)
+    best_fitness = 0
+    optimal_solution = []
+    populations = []
+    for iterations in 1:T
+    
+        ## EMPLOYED BEE PHASE
+        population, fitness_values, objective_values, trial = employed_bee_phase(population, bounds_lower, bounds_upper, trial, Np, f::Function)
+    
+    
+        ## ONLOOKER BEE PHASE
+        population, fitness_values, objective_values, trial = onlooker_bee_phase(population, bounds_lower, bounds_upper, trial, Np, f::Function)  
+       
+        ## SCOUTING PHASE
+        if maximum(fitness_values) > best_fitness
+            best_fitness = maximum(fitness_values)
+            ind = argmax(fitness_values)
+            optimal_solution = population[ind]
+            
+        end
+            
+        population, fitness_values, objective_values, trial = Scouting(population, bounds_lower, bounds_upper, trial, fitness_values, objective_values, limit, f::Function)
+        
+        if maximum(fitness_values) > best_fitness
+            best_fitness = maximum(fitness_values)
+            ind = argmax(fitness_values)
+            optimal_solution = population[ind]
+            
+        end
+        populations = append!(populations, [population])
+    end
+
+    return optimal_solution,populations
+end
+	
+end
+
+# ╔═╡ 54c02380-42a4-11eb-0240-7b2d895cb337
+begin
+	optimal_solution,populations = ArtificialBeeColonization(D, bounds_lower, bounds_upper, S, T, limit, f_optimize)
+	optimal_solution 
+end
+
+# ╔═╡ b81d7f30-42a5-11eb-27ce-f1cc849ffdc5
+@bind step Slider(1:T; show_value=true)
+
+# ╔═╡ 9e2b4e60-42ee-11eb-0d7f-c1faa8426796
+begin
+		x = []; y = []; z = []
+		for bee in populations[step]
+			append!(x,bee[1]); append!(y, bee[2]); append!(z, 0)
+		end
+	 
+	
+		if functie == "sphere"
+			x2=range(bounds_lower[1],bounds_upper[1], step=1)
+			y2=range(bounds_lower[2],bounds_upper[2], step=1)
+			f(x2,y2) = (x2^2+y2^2)
+		end
+	
+		if functie == "ackley"
+			x2=range(bounds_lower[1],bounds_upper[1], step=0.75)
+			y2=range(bounds_lower[2],bounds_upper[2], step=0.75)
+		    d = 2
+			c=2*3.14
+			a=20
+			b=0.2
+		    f(x2,y2) = -a * exp(-b*sqrt((x2^2+y2^2)/d))-exp((cos(c*x2)+cos(c*y2))/d) + a + exp(1)  
+		
+		end
+		
+		if functie == "rosenbrock"
+			x2=range(bounds_lower[1],bounds_upper[1], step=0.5)
+			y2=range(bounds_lower[2],bounds_upper[2], step=0.5)
+			a=1
+			b=5
+		    f(x2,y2) = (a-x2)^2 + b*(y2-x2^2)^2
+		end	
+	
+		if functie == "branin"
+			x2=range(bounds_lower[1],bounds_upper[1], step=0.5)
+			y2=range(bounds_lower[2],bounds_upper[2], step=0.5)
+			a=1 
+			b=5.1/(4pi^2)
+			c=5/pi
+			r=6
+			s=10
+			t=1/8pi
+		    f(x2,y2) = a * (y2 - b * x2^2 + c * x2 - r)^2 + s * (1 - t) * cos(x2) + s
+		end	
+	
+		if functie == "rastrigine"
+			x2=range(bounds_lower[1],bounds_upper[1], step=0.5)
+			y2=range(bounds_lower[2],bounds_upper[2], step=0.5)
+			A=10
+			d=2
+		    f(x2,y2) = d*A + x2^2-A*cos(2pi*x2) + y2^2-A*cos(2pi*y2)
+		end	
 end
 
 # ╔═╡ 581a22f0-42af-11eb-1d59-df5f1efa5732
 begin
-	# scatter(x, y, xlabel="x", ylabel="y", 
-	# 	 title="Evolution of populations over time")
-	# my_cg = cgrad([:yellow,:red])
-	x2=range(bounds_lower[1],bounds_upper[1], step=1)
-	y2=range(bounds_lower[2],bounds_upper[2], step=1)
-	# z2=range(bounds_lower[2],bounds_upper[2], step=5)
-	if functie == "sphere"
-		f(x2,y2) = (x2.^2+y2.^2)
-	end
-	
-	if functie == "ackley"
-	    d = length(vcat(x2,y2))
-		c=2*3.14
-		a=20
-		b=0.2
-	    f(x2,y2) = -a * exp(-b*sqrt( sum(x2.^2)+sum(y2.^2)/d )) 
-			-exp(sum(cos.(c .* x2)) + sum(cos.(c .* y2)) /d) 
-			+ 20 + exp(1)  
-	end
-		
-	
+
 	plot(x2,y2,f,st=:contour,
 		label="Objective function",
-		# camera=(-30,30),
 		xlims=(bounds_lower[1],bounds_upper[1]),
 		ylims=(bounds_lower[2],bounds_upper[2]),
-		# zlims=(-2,10000),
-		legend=:outerbottom) #,c=my_cg) #,camera=(-30,30))
+		legend=:outerbottom) 
 	
-	scatter!(x, y, 
-		 # z, 
+	scatter!(x, y,  
 		xlabel="x1", 
 		ylabel="x2",
 		zlabel="x3",
@@ -619,28 +646,28 @@ begin
 		legend = :outerbottom)
 end
 
-# ╔═╡ 5e318920-42c4-11eb-36a1-3f2cb06afaac
+# ╔═╡ 71321ef0-42eb-11eb-0635-b1ce95226c75
 begin
-	# scatter(x, y, xlabel="x", ylabel="y", 
-	# 	 title="Evolution of populations over time")
-	# my_cg = cgrad([:yellow,:red])
-
+	if functie == sphere
+		zlims=(-2,10000)
+	end
+	if functie == ackley
+		zlims=(-50,100)
+	end
 	
 	plot(x2,y2,f,st=:surface,
 		label="Objective function",
 		# camera=(-30,30),
 		xlims=(bounds_lower[1],bounds_upper[1]),
 		ylims=(bounds_lower[2],bounds_upper[2]),
-		zlims=(-2,10000),
+		zlims=zlims,
 		legend=:outerbottom) #,c=my_cg) #,camera=(-30,30))
 	
-	scatter!(x, y, 
-		  z, 
+	scatter!(x, y, z, 
 		xlabel="x1", 
 		ylabel="x2",
-		zlabel="x3",
-		title="Evolution of populations over time",
-		titlefont = font(15),
+		# title="Evolution of populations over time",
+		# titlefont = font(15),
 		c="blue", 
 		markershape=  :circle,
 		label="Position of bees after iteration "*string(step),
@@ -648,18 +675,7 @@ begin
 end
 
 # ╔═╡ Cell order:
-# ╠═b2d27f2e-42dc-11eb-2a63-73877d1df55d
-# ╠═f347e610-42a3-11eb-2116-ef50f1246cf3
-# ╟─18bf40b0-42d0-11eb-336d-935a75cd63c4
-# ╠═fc67c090-42d4-11eb-2737-2bdefb4375a0
-# ╠═15f8ed60-42d3-11eb-0199-2967a058405a
-# ╠═54c02380-42a4-11eb-0240-7b2d895cb337
-# ╟─fb7427b0-42a6-11eb-254b-298fe1325785
-# ╠═97ccd540-42a6-11eb-1064-2d014a91ac23
-# ╠═b81d7f30-42a5-11eb-27ce-f1cc849ffdc5
-# ╠═581a22f0-42af-11eb-1d59-df5f1efa5732
-# ╠═5e318920-42c4-11eb-36a1-3f2cb06afaac
-# ╠═6123c2b0-42a6-11eb-3891-39dd02f46306
+# ╠═0ca837e0-42ef-11eb-17fa-9335cb9a3997
 # ╟─70832f00-42a3-11eb-047e-a38754853775
 # ╟─74b19670-42a3-11eb-2ffb-253407cbad76
 # ╟─7f387140-42a3-11eb-1b22-8f9ca4f6bacd
@@ -668,4 +684,13 @@ end
 # ╟─9b02b33e-42a3-11eb-16b2-4fc4e0e2ba50
 # ╟─9ca62a10-42a3-11eb-1650-6544fb0ebd31
 # ╟─a8d02d90-42a3-11eb-36d5-d319a05d9347
-# ╠═f3396db0-42d0-11eb-2e37-153372b7383e
+# ╟─b023f0e0-42a3-11eb-18f9-c1b132fb5276
+# ╟─f14360b0-42e9-11eb-1f4c-35d1a9eb188e
+# ╠═27f302ee-42ea-11eb-2d9e-49dffc0d983d
+# ╟─3235a8d2-42ea-11eb-1fe1-6d91eca83dad
+# ╟─f347e610-42a3-11eb-2116-ef50f1246cf3
+# ╠═54c02380-42a4-11eb-0240-7b2d895cb337
+# ╠═b81d7f30-42a5-11eb-27ce-f1cc849ffdc5
+# ╟─9e2b4e60-42ee-11eb-0d7f-c1faa8426796
+# ╟─581a22f0-42af-11eb-1d59-df5f1efa5732
+# ╟─71321ef0-42eb-11eb-0635-b1ce95226c75
