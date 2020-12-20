@@ -3,7 +3,7 @@
 Project STMO: ABC (Artificial Bee Algorithm)
 
 Functies 
--	Main Artificial Bee Algorithm script
+-	Main Artificial Bee Algorithm script 
 -	Initialize random population function: DONE
 -	Objective function + fitness function: DONE
 -	Create new solution (1 variabele verschil: employed bees, onlooker bees): DONE
@@ -22,13 +22,12 @@ Uitwerken voor andere functies
 Visualizatie van convergentie algoritme
 - evolutie van populaties in 2D/3D grid?
 - evolutie fitness doorheen de tijd stijgende lijn 
--animatie van hoe de bijen bewegen naar minimum. 
--basic functies (benchmark functies) => optim package vergelijken met accuraatheid en snelheid. 
--1 notebook 
+- animatie van hoe de bijen bewegen naar minimum. 
+- basic functies (benchmark functies) => optim package vergelijken met accuraatheid en snelheid. DONE 
+- 1 notebook 
 
 
-assert is om de input te checken van de functies. 
-
+assert is om de input te checken van de functies. DONE
 Unit test => als ontwikkelaar of de functies werken.
 Sanity check.  
 
@@ -65,13 +64,18 @@ All solutions get an opportunity to generate a new solution in the employed bee 
 
 Onlooker bee phase:
 Select a food source with a probability related to nectar amount
+So a higher fitness value will have a higher probability to be chosen. 
+Fitter solution may undergo multiple onlooker bee explorations. 
 generate a new solution using a partner solution
 Greedy selection => accept new soltuion if it is better than the current solution 
 => not every food source will be explored, every onlooker bee will explore a certain food source with a certain probability
 
 Scout bee phase:
+If the value of trial is greater than limit (set by yourself) => then the solution can potentially enter the scout phase
 Exhausted food source is abandoned
-Discard and generate new solution
+Discard and generate random new solution
+trial counter is reset to zero 
+memorize the best solution before performing scout phase 
 
 
 Fitness is inversely related with the objective function
