@@ -20,9 +20,9 @@ Toy example
 Uitwerken voor andere functies
 
 Visualizatie van convergentie algoritme
-- evolutie van populaties in 2D/3D grid?
+- evolutie van populaties in 2D/3D grid? done
 - evolutie fitness doorheen de tijd stijgende lijn 
-- animatie van hoe de bijen bewegen naar minimum. 
+- animatie van hoe de bijen bewegen naar minimum. done
 - basic functies (benchmark functies) => optim package vergelijken met accuraatheid en snelheid. DONE 
 - 1 notebook 
 
