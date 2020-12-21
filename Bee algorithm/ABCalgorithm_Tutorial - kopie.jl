@@ -13,6 +13,9 @@ macro bind(def, element)
     end
 end
 
+# ╔═╡ 935e57b0-438f-11eb-0ed4-b3ad455bbd63
+using STMOZOO.BeesAlgorithm
+
 # ╔═╡ 0ca837e0-42ef-11eb-17fa-9335cb9a3997
 using InteractiveUtils, Plots, PlutoUI
 
@@ -779,9 +782,10 @@ md" #### References
 # ╟─eee523f0-436e-11eb-2e92-d59ed5c533e6
 # ╟─3c1c9be0-4373-11eb-1b1e-3d3f2e6afb19
 # ╟─7a2fdff0-4373-11eb-337a-8fb102ef7b78
+# ╠═935e57b0-438f-11eb-0ed4-b3ad455bbd63
 # ╠═0ca837e0-42ef-11eb-17fa-9335cb9a3997
 # ╟─99ef02ce-4373-11eb-3592-ef0287dca72c
-# ╟─70832f00-42a3-11eb-047e-a38754853775
+# ╠═70832f00-42a3-11eb-047e-a38754853775
 # ╟─74b19670-42a3-11eb-2ffb-253407cbad76
 # ╟─7f387140-42a3-11eb-1b22-8f9ca4f6bacd
 # ╟─85259fae-42a3-11eb-0431-67e3278dbfb0
@@ -790,7 +794,7 @@ md" #### References
 # ╟─9ca62a10-42a3-11eb-1650-6544fb0ebd31
 # ╟─a8d02d90-42a3-11eb-36d5-d319a05d9347
 # ╟─b023f0e0-42a3-11eb-18f9-c1b132fb5276
-# ╟─f14360b0-42e9-11eb-1f4c-35d1a9eb188e
+# ╠═f14360b0-42e9-11eb-1f4c-35d1a9eb188e
 # ╠═a9462a5e-4373-11eb-3b48-39a2596229a9
 # ╟─27f302ee-42ea-11eb-2d9e-49dffc0d983d
 # ╠═3235a8d2-42ea-11eb-1fe1-6d91eca83dad
